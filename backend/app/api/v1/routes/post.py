@@ -114,9 +114,6 @@ async def vote_post(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    if value == 0:
-        raise HTTPException(status_code=400, detail="Invalid vote")
-
     post = await db.get(Post, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -129,8 +126,16 @@ async def vote_post(
     )
     vote = result.scalar_one_or_none()
 
+    if value == 0:
+        if vote:
+            post.points -= vote.value
+            await db.delete(vote)
+            await db.commit()
+        return {"post_id": post_id, "points": post.points}
+
     if vote:
         if vote.value == value:
+            # idempotent: same vote again
             return {"post_id": post_id, "points": post.points}
         post.points -= vote.value
         vote.value = value
