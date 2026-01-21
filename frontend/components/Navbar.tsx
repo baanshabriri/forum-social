@@ -9,7 +9,6 @@ export default function Navbar() {
     return (
         <nav className="bg-orange-500 text-white py-2 px-4 border-b-2 border-orange-600">
             <div className="max-w-6xl mx-auto">
-                {/* First Line: Brand and User */}
                 <div className="flex items-center justify-between mb-1">
                     <Link href="/" className="font-bold text-xl hover:text-orange-100">
                         4umSocial

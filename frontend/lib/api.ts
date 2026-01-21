@@ -57,6 +57,16 @@ class ApiClient {
         return res.json();
     }
 
+    async searchPosts(query: string): Promise<Post[]> {
+        const res = await fetch(
+            `${API_URL}/posts/search?q=${encodeURIComponent(query)}`
+        );
+        if (!res.ok) {
+            throw new Error('Search failed');
+        }
+        return res.json();
+    }
+
     async createPost(data: PostCreate): Promise<Post> {
         const res = await fetch(`${API_URL}/posts/`, {
             method: 'POST',

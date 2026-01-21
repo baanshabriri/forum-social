@@ -15,10 +15,14 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [query, setQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   const limit = 20;
 
   useEffect(() => {
-    loadPosts(true);
+    if (!isSearching) {
+      loadPosts(true);
+    }
   }, [sort]);
 
   const loadPosts = async (reset = false) => {
@@ -47,28 +51,68 @@ export default function Home() {
     loadPosts(false);
   };
 
-  if (loading && posts.length === 0) {
-    return (
-      <div className="text-center py-8 text-gray-500">
-        Loading posts...
-      </div>
-    );
-  }
+  const searchPosts = async () => {
+    if (!query.trim()) {
+      // empty search → go back to feed
+      setIsSearching(false);
+      loadPosts(true);
+      return;
+    }
+
+    setLoading(true);
+    setIsSearching(true);
+
+    try {
+      const data = await api.searchPosts(query.trim());
+      setPosts(data);
+      setHasMore(false); // no pagination for search (for now)
+    } catch (error) {
+      console.error('Search failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
-      <div className="mb-4 flex gap-4 text-sm border-b pb-2">
-        <span className="font-medium text-gray-700">
-          Sorted by: <span className="text-orange-500">{sort}</span>
+
+      <div className="flex items-end justify-between border-b border-gray-300/60 pb-2 text-sm">
+        {/* Left: Search */}
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-gray-500">search:</span>
+
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && searchPosts()}
+            className="border-b border-gray-300 bg-transparent px-1 text-sm focus:outline-none focus:border-orange-500"
+            placeholder="search titles"
+          />
+
+          <button
+            type="button"
+            onClick={searchPosts}
+            className="rounded text-gray-500 hover:text-orange-500"
+            aria-label="Submit search"
+          >
+            🔍
+          </button>
+        </div>
+
+        {/* Right: Sort */}
+        <span className="font-medium text-gray-500">
+          sorted by: <span className="text-orange-500">{sort}</span>
         </span>
       </div>
 
+      {/* Posts */}
       {posts.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
-          No posts yet. Be the first to submit!
+          No posts found.
         </div>
       ) : (
-        <div className="divide-y-0 divide-amber-600">
+        <div>
           {posts.map((post, index) => (
             <PostItem
               key={post.id}
@@ -80,7 +124,8 @@ export default function Home() {
         </div>
       )}
 
-      {hasMore && posts.length > 0 && (
+      {/* Load more (disabled during search) */}
+      {hasMore && posts.length > 0 && !isSearching && (
         <div className="text-center mt-6">
           <button
             onClick={loadMore}

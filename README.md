@@ -35,11 +35,15 @@ The project supports authentication, post submission, voting, threaded comments,
 - Docker Compose
 
 ### Clone the repository
+```
 git clone git@github.com:baanshabriri/forum-social.git
 cd forum-social
+```
 
 ### Start the application
+```
 docker compose up -d --build
+```
 
 ### Services
 - Backend API: http://localhost:8000
@@ -95,6 +99,38 @@ All dependencies are installed automatically via Docker.
 
 ---
 
+## API Documentation
+
+See `API.md` or Swagger API Docs: http://localhost:8000/docs
+for full backend API documentation.
+
+---
+
+## Features Implemented
+
+- User signup and login
+- Post submission (URL or text)
+- Post feed (sort by new / top / best)
+- Post search by title
+- Upvote, downvote, unvote
+- Threaded comments
+- Rate limiting
+- Vote state persistence
+- Dockerized full stack
+- CI for backend, frontend, and Docker builds
+
+---
+
+## Future Improvements
+
+- Comment voting
+- User profiles
+- Notifications
+- Redis-backed rate limiting
+- Production deployment
+
+---
+
 ## AI Tools Used
 
 - ChatGPT
@@ -115,37 +151,6 @@ They helped with:
 - Documentation drafting
 
 All final decisions, architecture, and code were reviewed and implemented manually.
-
----
-
-## API Documentation
-
-See `API.md` for full backend API documentation.
-
----
-
-## Features Implemented
-
-- User signup and login
-- Post submission (URL or text)
-- Post feed (new / top / best)
-- Upvote, downvote, unvote
-- Threaded comments
-- Rate limiting
-- Vote state persistence
-- Dockerized full stack
-- CI for backend, frontend, and Docker builds
-
----
-
-## Future Improvements
-
-- Comment voting
-- User profiles
-- Search
-- Notifications
-- Redis-backed rate limiting
-- Production deployment
 
 ---
 
