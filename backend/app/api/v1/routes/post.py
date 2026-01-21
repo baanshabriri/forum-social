@@ -170,7 +170,7 @@ async def search_posts(
 ):
     id_stmt = (
         select(Post.id)
-        .where(Post.title.ilike(f"{q}%"))
+        .where(Post.title.ilike(f"%{q}%"))
         .order_by(Post.created_at.desc())
         .limit(limit)
         .offset(offset)
