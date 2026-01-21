@@ -4,7 +4,7 @@ from app.api.v1.routes import auth, post, comment
 from app.models import User, Post, Comment, Vote
 
 app = FastAPI(
-    title="Hacker News Clone API",
+    title="4umSocial API",
     version="0.1.0"
 )
 app.add_middleware(

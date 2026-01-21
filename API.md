@@ -15,15 +15,20 @@ Authentication uses Bearer JWT tokens.
 Create a new user.
 
 Request body:
+```
 {
     "username": "string",
     "email": "string",
     "password": "string"
 }
-
-yaml
-Copy code
-
+```
+Response:
+```
+{
+  "access_token": "string",
+  "token_type": "bearer"
+}
+```
 ---
 
 ### POST /auth/login
@@ -31,22 +36,19 @@ Copy code
 Authenticate a user.
 
 Request body:
+```
 {
     "username": "string",
     "password": "string"
 }
-
-makefile
-Copy code
-
+```
 Response:
+```
 {
-"access_token": "string",
-"token_type": "bearer"
+    "access_token": "string",
+    "token_type": "bearer"
 }
-
-yaml
-Copy code
+```
 
 ---
 
@@ -62,24 +64,23 @@ Query parameters:
 - offset: integer (optional, default: 0)
 
 Response:
+```
 [
-{
-"id": 1,
-"title": "Post title",
-"url": "https://example.com",
-"text": null,
-"author_id": 1,
-"author_name": "alice",
-"points": 10,
-"upvotes": 12,
-"downvotes": 2,
-"user_vote": 1,
-"created_at": "2024-01-01T12:00:00Z"
-}
+    {
+        "id": 1,
+        "title": "Post title",
+        "url": "https://example.com",
+        "text": null,
+        "author_id": 1,
+        "author_name": "alice",
+        "points": 10,
+        "upvotes": 12,
+        "downvotes": 2,
+        "comments_count": 1,
+        "created_at": "2024-01-01T12:00:00Z"
+    }
 ]
-
-yaml
-Copy code
+```
 
 ---
 
@@ -90,15 +91,29 @@ Create a new post.
 Authentication required.
 
 Request body:
+```
 {
-"title": "string",
-"url": "string | null",
-"text": "string | null"
+    "title": "string",
+    "url": "string | null",
+    "text": "string | null"
 }
-
-yaml
-Copy code
-
+```
+Response:
+```
+{
+    "id": 0,
+    "title": "string",
+    "url": "string",
+    "text": "string",
+    "points": 0,
+    "upvotes": 0,
+    "downvotes": 0,
+    "comment_count": 0,
+    "author_id": 0,
+    "author_name": "string",
+    "created_at": "2026-01-21T19:26:06.451Z"
+}
+```
 ---
 
 ### POST /posts/{post_id}/vote
@@ -114,14 +129,12 @@ Query parameters:
   - 0 = remove vote
 
 Response:
+```
 {
-"post_id": 1,
-"points": 42
-}
-
-yaml
-Copy code
-
+    "post_id": 1,
+    "points": 42
+    }
+```
 ---
 
 ## Comments
@@ -131,22 +144,20 @@ Copy code
 Fetch threaded comments for a post.
 
 Response:
+```
 [
-{
-"id": 1,
-"content": "Comment text",
-"author_id": 2,
-"author_name": "bob",
-"post_id": 1,
-"parent_id": null,
-"created_at": "2024-01-01T12:00:00Z",
-"children": []
-}
+    {
+        "id": 1,
+        "content": "Comment text",
+        "author_id": 2,
+        "author_name": "bob",
+        "post_id": 1,
+        "parent_id": null,
+        "created_at": "2024-01-01T12:00:00Z",
+        "children": []
+    }
 ]
-
-yaml
-Copy code
-
+```
 ---
 
 ### POST /comments/posts/{post_id}
@@ -156,14 +167,12 @@ Add a comment.
 Authentication required.
 
 Request body:
+```
 {
-"content": "string",
-"parent_id": null
+    "content": "string",
+    "parent_id": null
 }
-
-yaml
-Copy code
-
+```
 ---
 
 ### PUT /comments/{comment_id}
@@ -171,15 +180,12 @@ Copy code
 Edit a comment.
 
 Authentication required (owner only).
-
+```
 Request body:
 {
-"content": "string"
+    "content": "string"
 }
-
-yaml
-Copy code
-
+```
 ---
 
 ### DELETE /comments/{comment_id}
@@ -195,8 +201,9 @@ Authentication required (owner only).
 ### GET /health
 
 Health check endpoint.
-
+```
 Response:
 {
-"status": "ok"
+    "status": "ok"
 }
+```
