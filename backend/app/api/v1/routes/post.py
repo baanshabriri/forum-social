@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, case
 from sqlalchemy.orm import selectinload
 
 from app.core.database import get_db
@@ -41,7 +41,23 @@ async def list_posts(
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
 ):
-    stmt = select(Post).outerjoin(Vote)
+    upvotes = func.coalesce(
+        func.sum(case((Vote.value == 1, 1), else_=0)), 0
+    ).label("upvotes")
+
+    downvotes = func.coalesce(
+        func.sum(case((Vote.value == -1, 1), else_=0)), 0
+    ).label("downvotes")
+
+    stmt = (
+        select(
+            Post,
+            upvotes,
+            downvotes,
+        )
+        .outerjoin(Vote, Vote.post_id == Post.id)
+        .group_by(Post.id)
+    )
 
     if sort == "new":
         stmt = stmt.order_by(Post.created_at.desc())
@@ -57,7 +73,24 @@ async def list_posts(
     stmt = stmt.limit(limit).offset(offset)
 
     result = await db.execute(stmt)
-    return result.scalars().all()
+
+    posts = []
+    for post, up, down in result.all():
+        posts.append(
+            {
+                "id": post.id,
+                "title": post.title,
+                "url": post.url,
+                "text": post.text,
+                "points": post.points,
+                "upvotes": up,
+                "downvotes": down,
+                "author_id": post.author_id,
+                "created_at": post.created_at,
+            }
+        )
+
+    return posts
 
 
 
