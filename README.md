@@ -30,6 +30,135 @@ The project supports authentication, post submission, voting, threaded comments,
 
 ## Setup Instructions
 
+This section explains how to run the project locally **without Docker**, using native installations.
+
+---
+
+### Prerequisites
+
+You must have the following installed:
+
+#### Backend
+- Python 3.12
+- PostgreSQL 16+
+- pip3
+
+#### Frontend
+- Node.js 20
+- npm
+
+---
+
+## Backend Setup (FastAPI)
+
+### 1. Create a virtual environment
+
+From the `backend/` directory:
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
+---
+
+### 2. Install dependencies
+
+```
+pip3 install --upgrade pip
+pip3 install -r requirements.txt
+```
+---
+
+### 3. Create the database
+
+Login to PostgreSQL:
+```
+psql -U postgres
+```
+Create user and database:
+```
+CREATE USER hn_user WITH PASSWORD 'hn_pass';
+CREATE DATABASE hn_db OWNER hn_user;
+\q;
+```
+
+---
+
+### 4. Configure environment variables
+
+Create a `.env` file inside `backend/`:
+
+```
+DATABASE_URL=postgresql+asyncpg://hn_user:hn_pass@db:5432/hn_db
+SECRET_KEY=super-secret-change-me
+POSTGRES_DB=hn_db
+POSTGRES_USER=hn_user
+POSTGRES_PASSWORD=hn_pass
+POSTGRES_HOST=db
+```
+---
+
+### 5. Run database migrations
+```
+alembic upgrade head
+```
+---
+
+### 6. Start the backend server
+```
+uvicorn app.main:app --reload
+```
+
+Backend will be available at:
+- http://localhost:8000
+- Swagger docs: http://localhost:8000/docs
+
+---
+
+## Frontend Setup (Next.js)
+
+### 1. Install dependencies
+
+From the `frontend/` directory:
+```
+npm install
+```
+---
+
+### 2. Configure environment variables
+
+Create a `.env.local` file in `frontend/`:
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+---
+
+### 3. Start the frontend
+```
+npm run dev
+```
+Frontend will be available at:
+- http://localhost:3000
+
+---
+
+## Verifying the Setup
+
+1. Visit http://localhost:3000
+2. Sign up a new user
+3. Submit a post
+4. Vote and comment to verify full functionality
+
+---
+
+## Notes
+
+- The backend must be running before the frontend
+- PostgreSQL must be running locally
+- Docker is recommended
+
+---
+## Setup Instructions Docker
+
 ### Prerequisites
 - Docker
 - Docker Compose
