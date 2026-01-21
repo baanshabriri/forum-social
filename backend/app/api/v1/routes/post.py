@@ -4,6 +4,7 @@ from sqlalchemy import select, func, case
 from sqlalchemy.orm import selectinload
 
 from app.core.database import get_db
+from app.core.limiter import rate_limit
 from app.api.deps import get_current_user
 from app.models.post import Post
 from app.models.vote import Vote
@@ -13,6 +14,7 @@ from app.models.user import User
 router = APIRouter(prefix="/posts", tags=["posts"])
 
 @router.post("/", response_model=PostOut)
+@rate_limit(action="post", limit=10, window_seconds=20 * 60)
 async def create_post(
     payload: PostCreate,
     db: AsyncSession = Depends(get_db),
@@ -91,6 +93,7 @@ async def list_posts(
 
 
 @router.post("/{post_id}/vote")
+@rate_limit(action="vote", limit=5, window_seconds=1 * 60)
 async def vote_post(
     post_id: int,
     value: int = Query(..., ge=-1, le=1),
