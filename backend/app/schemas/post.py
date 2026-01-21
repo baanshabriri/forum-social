@@ -22,6 +22,7 @@ class PostOut(BaseModel):
     upvotes: int
     downvotes: int
     author_id: int
+    author_name: Optional[str]
     created_at: datetime
 
     class Config:

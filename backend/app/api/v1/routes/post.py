@@ -36,6 +36,7 @@ async def create_post(
     return PostOut(
         id=post.id,
         author_id=post.author_id,
+        author_name=user.username,
         title=post.title,        
         points=post.points,
         text=post.text,
@@ -66,9 +67,11 @@ async def list_posts(
             Post,
             upvotes,
             downvotes,
+            User.username
         )
         .outerjoin(Vote, Vote.post_id == Post.id)
-        .group_by(Post.id)
+        .join(User, User.id == Post.author_id)
+        .group_by(Post.id, User.username)
     )
 
     if sort == "new":
@@ -86,7 +89,7 @@ async def list_posts(
     result = await db.execute(stmt)
 
     posts = []
-    for post, up, down in result.all():
+    for post, up, down, username in result.all():
         posts.append(PostOut(
             id= post.id,
             title=post.title,
@@ -96,6 +99,7 @@ async def list_posts(
             upvotes=up,
             downvotes=down,
             author_id=post.author_id,
+            author_name=username,
             created_at=post.created_at,
         ))
     return posts

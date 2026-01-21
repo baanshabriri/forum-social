@@ -16,6 +16,7 @@ class CommentOut(BaseModel):
     id: int
     content: str
     author_id: int
+    author_name: str
     post_id: int
     parent_id: Optional[int]
     created_at: datetime

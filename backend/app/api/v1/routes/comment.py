@@ -46,8 +46,9 @@ async def add_comment(
 
     return CommentOut(
         id=comment.id,
-        content=comment.content,
+        content=comment.content,        
         author_id=comment.author_id,
+        author_name=user.username,
         post_id=comment.post_id,
         parent_id=comment.parent_id,
         created_at=comment.created_at,
@@ -55,25 +56,28 @@ async def add_comment(
     )
 
 
-def build_comment_tree(comments: list[Comment]) -> list[CommentOut]:
+def build_comment_tree(
+    comments: list[tuple[Comment, str]]
+) -> list[CommentOut]:
     comment_map: dict[int, CommentOut] = {}
     roots: list[CommentOut] = []
 
-    for c in comments:
-        comment_map[c.id] = CommentOut(
-            id=c.id,
-            content=c.content,
-            author_id=c.author_id,
-            post_id=c.post_id,
-            parent_id=c.parent_id,
-            created_at=c.created_at,
+    for comment, username in comments:
+        comment_map[comment.id] = CommentOut(
+            id=comment.id,
+            content=comment.content,
+            author_id=comment.author_id,
+            author_name=username,
+            post_id=comment.post_id,
+            parent_id=comment.parent_id,
+            created_at=comment.created_at,
             children=[],
         )
-
-    for c in comments:
-        node = comment_map[c.id]
-        if c.parent_id:
-            parent = comment_map.get(c.parent_id)
+        
+    for comment, _ in comments:
+        node = comment_map[comment.id]
+        if comment.parent_id:
+            parent = comment_map.get(comment.parent_id)
             if parent:
                 parent.children.append(node)
         else:
@@ -88,11 +92,15 @@ async def get_comments(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
-        select(Comment)
+        select(
+            Comment,
+            User.username.label("username"),
+        )
         .where(Comment.post_id == post_id)
+        .join(User, User.id == Comment.author_id)
         .order_by(Comment.created_at.asc())
     )
-    comments = result.scalars().all()
+    comments = result.all()
     return build_comment_tree(comments)
 
 
@@ -105,6 +113,10 @@ async def update_comment(
     user: User = Depends(get_current_user),
 ):
     comment = await db.get(Comment, comment_id)
+    # comment = await db.execute(
+    #     select(Comment)
+    #     .join(User, User.id == Comment.author_id)
+    # )
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
 
@@ -117,6 +129,7 @@ async def update_comment(
     return CommentOut(    
         id=comment.id,
         author_id=comment.author_id,
+        author_name=user.username,
         content=comment.content,
         parent_id=comment.parent_id,
         post_id=comment.post_id,
