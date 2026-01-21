@@ -33,7 +33,17 @@ async def create_post(
     db.add(post)
     await db.commit()
     await db.refresh(post)
-    return post
+    return PostOut(
+        id=post.id,
+        author_id=post.author_id,
+        title=post.title,        
+        points=post.points,
+        text=post.text,
+        url=post.url,
+        upvotes=0,
+        downvotes=0,
+        created_at=post.created_at
+    )
 
 
 @router.get("/", response_model=list[PostOut])
