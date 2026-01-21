@@ -18,6 +18,7 @@ export default function PostDetailPage() {
     const [comments, setComments] = useState<Comment[]>([]);
     const [loading, setLoading] = useState(true);
     const [voted, setVoted] = useState<number | null>(null);
+    const [isVoting, setIsVoting] = useState(false);
     const [localPoints, setLocalPoints] = useState(0);
 
     useEffect(() => {
@@ -56,23 +57,17 @@ export default function PostDetailPage() {
             alert('Please login to vote');
             return;
         }
-
+        if (isVoting) return;
+        setIsVoting(true);
         try {
-            const newValue = voted === value ? 0 : value;
-            await api.votePost(postId, newValue);
-
-            if (voted !== null && newValue === 0) {
-                setLocalPoints(prev => prev - voted);
-                setVoted(null);
-            } else if (voted !== null) {
-                setLocalPoints(prev => prev - voted + newValue);
-                setVoted(newValue);
-            } else {
-                setLocalPoints(prev => prev + newValue);
-                setVoted(newValue);
-            }
+            const nextVoteValue = voted === value ? 0 : value;
+            const response = await api.votePost(postId, nextVoteValue);
+            setLocalPoints(response.points);
+            setVoted(nextVoteValue === 0 ? null : nextVoteValue);
         } catch (error) {
             console.error('Vote failed:', error);
+        } finally {
+            setIsVoting(false);
         }
     };
 
@@ -118,7 +113,7 @@ export default function PostDetailPage() {
                         <button
                             onClick={() => handleVote(1)}
                             className={`text-gray-400 hover:text-orange-500 text-xl ${voted === 1 ? 'text-orange-500' : ''}`}
-                            disabled={!isAuthenticated}
+                            disabled={!isAuthenticated || isVoting}
                         >
                             ▲
                         </button>
@@ -126,7 +121,7 @@ export default function PostDetailPage() {
                         <button
                             onClick={() => handleVote(-1)}
                             className={`text-gray-400 hover:text-orange-500 text-xl ${voted === -1 ? 'text-orange-500' : ''}`}
-                            disabled={!isAuthenticated}
+                            disabled={!isAuthenticated || isVoting}
                         >
                             ▼
                         </button>
