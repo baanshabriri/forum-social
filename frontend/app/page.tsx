@@ -68,7 +68,7 @@ export default function Home() {
           No posts yet. Be the first to submit!
         </div>
       ) : (
-        <div className="space-y-0 divide-y">
+        <div className="divide-y-0 divide-amber-600">
           {posts.map((post, index) => (
             <PostItem
               key={post.id}

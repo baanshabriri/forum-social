@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,10 +13,11 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    if (isAuthenticated) {
-        router.push('/');
-        return null;
-    }
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push('/');
+        }
+    }, [isAuthenticated, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,37 +37,35 @@ export default function LoginPage() {
     return (
         <div className="max-w-md mx-auto mt-12" >
             <div className="bg-white border rounded-lg p-8 shadow-sm" >
-                <h1 className="text-2xl font-bold mb-6 text-center" > Login </h1>
+                <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
 
                 {
                     error && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm" >
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
                             {error}
                         </div>
-                    )
-                }
+                    )}
 
-                <form onSubmit={handleSubmit} className="space-y-4" >
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-2" >
+                        <label className="block text-sm font-medium mb-2">
                             Username
                         </label>
-                        < input
+                        <input
                             type="text"
                             value={username}
-                            onChange={(e) => setUsername(e.target.value)
-                            }
+                            onChange={(e) => setUsername(e.target.value)}
                             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
                             placeholder="Enter your username"
                             required
                         />
                     </div>
 
-                    < div >
-                        <label className="block text-sm font-medium mb-2" >
+                    <div>
+                        <label className="block text-sm font-medium mb-2">
                             Password
                         </label>
-                        < input
+                        <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -77,7 +75,7 @@ export default function LoginPage() {
                         />
                     </div>
 
-                    < button
+                    <button
                         type="submit"
                         disabled={loading}
                         className="w-full py-2 bg-orange-500 text-white rounded hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
@@ -86,9 +84,9 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                < p className="mt-6 text-center text-sm text-gray-600" >
-                    Don't have an account?{' '}
-                    < Link href="/signup" className="text-orange-600 hover:underline" >
+                <p className="mt-6 text-center text-sm text-gray-600">
+                    Don&apos;t have an account?{' '}
+                    <Link href="/signup" className="text-orange-600 hover:underline">
                         Sign up
                     </Link>
                 </p>
