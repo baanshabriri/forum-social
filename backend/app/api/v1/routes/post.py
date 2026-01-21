@@ -75,20 +75,17 @@ async def list_posts(
 
     posts = []
     for post, up, down in result.all():
-        posts.append(
-            {
-                "id": post.id,
-                "title": post.title,
-                "url": post.url,
-                "text": post.text,
-                "points": post.points,
-                "upvotes": up,
-                "downvotes": down,
-                "author_id": post.author_id,
-                "created_at": post.created_at,
-            }
-        )
-
+        posts.append(PostOut(
+            id= post.id,
+            title=post.title,
+            url=post.url,
+            text=post.text,
+            points=post.points,
+            upvotes=up,
+            downvotes=down,
+            author_id=post.author_id,
+            created_at=post.created_at,
+        ))
     return posts
 
 
