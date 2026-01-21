@@ -6,10 +6,8 @@ from sqlalchemy.orm import selectinload
 from app.core.database import get_db
 from app.core.limiter import rate_limit
 from app.api.deps import get_current_user
-from app.models.post import Post
-from app.models.vote import Vote
+from app.models import User, Post, Vote, Comment
 from app.schemas.post import PostCreate, PostOut
-from app.models.user import User
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -43,6 +41,7 @@ async def create_post(
         url=post.url,
         upvotes=0,
         downvotes=0,
+        comment_count=0,
         created_at=post.created_at
     )
 
@@ -62,16 +61,27 @@ async def list_posts(
         func.sum(case((Vote.value == -1, 1), else_=0)), 0
     ).label("downvotes")
 
+    comment_count_subq = (
+        select(
+            Comment.post_id,
+            func.count(Comment.id).label("comment_count")
+        )
+        .group_by(Comment.post_id)
+        .subquery()
+    )
+
     stmt = (
         select(
             Post,
             upvotes,
             downvotes,
-            User.username
+            User.username,
+            func.coalesce(comment_count_subq.c.comment_count, 0).label("comment_count")
         )
-        .outerjoin(Vote, Vote.post_id == Post.id)
+        .outerjoin(Vote, Vote.post_id == Post.id)        
+        .outerjoin(comment_count_subq, comment_count_subq.c.post_id == Post.id)
         .join(User, User.id == Post.author_id)
-        .group_by(Post.id, User.username)
+        .group_by(Post.id, User.username, comment_count_subq.c.comment_count)
     )
 
     if sort == "new":
@@ -89,7 +99,7 @@ async def list_posts(
     result = await db.execute(stmt)
 
     posts = []
-    for post, up, down, username in result.all():
+    for post, up, down, username, comment_count in result.all():
         posts.append(PostOut(
             id= post.id,
             title=post.title,
@@ -101,6 +111,7 @@ async def list_posts(
             author_id=post.author_id,
             author_name=username,
             created_at=post.created_at,
+            comment_count=comment_count
         ))
     return posts
 
