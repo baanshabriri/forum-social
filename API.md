@@ -133,10 +133,63 @@ Response:
 {
     "post_id": 1,
     "points": 42
-    }
+}
 ```
 ---
 
+### GET /posts/search
+
+Search posts by **title only** (case-insensitive substring match).
+
+This endpoint does **not** search post content or comments.
+
+---
+
+Request parameters:
+
+- q: string (required)  Search query text. Matches against post titles only.
+- limit: integer (optional, default: 20)    
+- offset: integer (optional, default: 0)  
+
+
+---
+
+Example request:
+
+GET /posts/search?q=wow
+
+
+---
+
+Response:
+
+[
+  {
+    "id": 6,
+    "title": "wow so many posts",
+    "url": null,
+    "text": "wow so many posts",
+    "points": 1,
+    "upvotes": 1,
+    "downvotes": 0,
+    "comment_count": 1,
+    "author_id": 2,
+    "author_name": "cd",
+    "created_at": "2026-01-21T17:49:56.048967Z"
+  }
+]
+
+---
+
+Notes:
+
+- Search is **case-insensitive**
+- Matches are **substring-based**
+- Results are ordered by `created_at DESC`
+- Pagination is optional and can be added via `limit` and `offset`
+- Authentication is **not required**
+
+---
 ## Comments
 
 ### GET /comments/posts/{post_id}

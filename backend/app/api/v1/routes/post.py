@@ -8,6 +8,7 @@ from app.core.limiter import rate_limit
 from app.api.deps import get_current_user
 from app.models import User, Post, Vote, Comment
 from app.schemas.post import PostCreate, PostOut
+from app.services.post import get_posts_data_for_search
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -158,3 +159,24 @@ async def vote_post(
     await db.commit()
 
     return {"post_id": post_id, "points": post.points}
+
+
+@router.get("/search", response_model=list[PostOut])
+async def search_posts(
+    q: str = Query(..., min_length=1),
+    limit: int = Query(20, le=50),
+    offset: int = 0,
+    db: AsyncSession = Depends(get_db),
+):
+    id_stmt = (
+        select(Post.id)
+        .where(Post.title.ilike(f"{q}%"))
+        .order_by(Post.created_at.desc())
+        .limit(limit)
+        .offset(offset)
+    )
+    result = await db.execute(id_stmt)
+    post_ids = result.scalars().all()
+    posts = await get_posts_data_for_search(limit=limit, offset=offset, post_ids=post_ids, db=db)
+    
+    return posts
