@@ -22,6 +22,7 @@ export interface Post {
     points: number;
     upvotes: number;
     downvotes: number;
+    comment_count: number;
     author_id: number;
     author_name: string;
     created_at: string;

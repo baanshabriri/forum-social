@@ -62,7 +62,7 @@ export default function PostItem({ post, rank, onVoteChange }: PostItemProps) {
     };
 
     return (
-        <div className="flex gap-2 py-2">
+        <div className="flex gap-2 py-1">
             {rank && (
                 <div className="text-gray-500 text-sm w-6 text-right">
                     {rank}.
@@ -118,11 +118,12 @@ export default function PostItem({ post, rank, onVoteChange }: PostItemProps) {
                     <span>{localPoints} points</span>
                     <span>by {post.author_name}</span>
                     <span>{timeAgo(post.created_at)}</span>
+                    <span>|</span>
                     <Link
                         href={`/post/${post.id}`}
-                        className="hover:underline"
+                        className="underline"
                     >
-                        discuss
+                        {post.comment_count} comments
                     </Link>
                 </div>
             </div>
