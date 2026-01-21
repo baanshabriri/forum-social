@@ -112,11 +112,15 @@ async def update_comment(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    comment = await db.get(Comment, comment_id)
-    # comment = await db.execute(
-    #     select(Comment)
-    #     .join(User, User.id == Comment.author_id)
-    # )
+    result = await db.execute(
+        select(
+            Comment,
+            User.username
+        )
+        .join(User, User.id == Comment.author_id)        
+        .where(Comment.id == comment_id)
+    )
+    comment = result.scalar_one_or_none()
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
 
@@ -133,6 +137,6 @@ async def update_comment(
         content=comment.content,
         parent_id=comment.parent_id,
         post_id=comment.post_id,
-        children=comment.children or [],
+        children=[],
         created_at=comment.created_at
     )
