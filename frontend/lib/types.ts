@@ -9,6 +9,11 @@ export interface Token {
     token_type: string;
 }
 
+export interface VoteResponse {
+    post_id: number;
+    points: number;
+}
+
 export interface Post {
     id: number;
     title: string;

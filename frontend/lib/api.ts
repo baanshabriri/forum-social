@@ -7,7 +7,8 @@ import type {
     CommentUpdate,
     UserCreate,
     UserLogin,
-    SortType
+    SortType,
+    VoteResponse
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -69,12 +70,13 @@ class ApiClient {
         return res.json();
     }
 
-    async votePost(postId: number, value: -1 | 0 | 1): Promise<void> {
+    async votePost(postId: number, value: -1 | 0 | 1): Promise<VoteResponse> {
         const res = await fetch(`${API_URL}/posts/${postId}/vote?value=${value}`, {
             method: 'POST',
             headers: this.getAuthHeader(),
         });
         if (!res.ok) throw new Error('Failed to vote');
+        return res.json()
     }
 
     // Comment endpoints
