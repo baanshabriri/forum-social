@@ -71,7 +71,6 @@ async def list_posts(
         )
 
     stmt = stmt.limit(limit).offset(offset)
-
     result = await db.execute(stmt)
 
     posts = []
@@ -117,6 +116,8 @@ async def vote_post(
     vote = result.scalar_one_or_none()
 
     if vote:
+        if vote.value == value:
+            return {"post_id": post_id, "points": post.points}
         post.points -= vote.value
         vote.value = value
     else:
