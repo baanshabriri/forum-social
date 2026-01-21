@@ -160,7 +160,7 @@ export default function PostDetailPage() {
                         )}
 
                         <div className="text-xs text-gray-500 mt-3">
-                            by user_{post.author_id} · {timeAgo(post.created_at)}
+                            by {post.author_name} · {timeAgo(post.created_at)}
                         </div>
                     </div>
                 </div>

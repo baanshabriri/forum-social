@@ -7,8 +7,8 @@ import Navbar from '@/components/Navbar';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'HN Clone',
-  description: 'A Hacker News clone built with Next.js',
+  title: 'SPC Social',
+  description: 'A social discussion forum built with Next.js',
 };
 
 export default function RootLayout({

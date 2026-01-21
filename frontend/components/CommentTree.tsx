@@ -52,7 +52,7 @@ export default function CommentTree({ comment, postId, onCommentAdded }: Comment
     return (
         <div className="border-l-2 border-gray-200 pl-4 mb-4">
             <div className="text-xs text-gray-500 mb-1">
-                <span className="font-medium text-gray-700">user_{comment.author_id}</span>
+                <span className="font-medium text-gray-700">{comment.author_name}</span>
                 {' · '}
                 <span>{timeAgo(comment.created_at)}</span>
             </div>

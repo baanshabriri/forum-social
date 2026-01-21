@@ -18,6 +18,7 @@ export interface Post {
     upvotes: number;
     downvotes: number;
     author_id: number;
+    author_name: string;
     created_at: string;
 }
 
@@ -25,6 +26,7 @@ export interface Comment {
     id: number;
     content: string;
     author_id: number;
+    author_name: string;
     post_id: number;
     parent_id: number | null;
     created_at: string;

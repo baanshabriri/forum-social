@@ -116,7 +116,7 @@ export default function PostItem({ post, rank, onVoteChange }: PostItemProps) {
 
                 <div className="text-xs text-gray-500 mt-1 flex gap-2">
                     <span>{localPoints} points</span>
-                    <span>by user_{post.author_id}</span>
+                    <span>by {post.author_name}</span>
                     <span>{timeAgo(post.created_at)}</span>
                     <Link
                         href={`/post/${post.id}`}

@@ -1,4 +1,3 @@
-// app/submit/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -33,7 +32,7 @@ export default function SubmitPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        if (loading) return;
         if (postType === 'url' && !url.trim()) {
             alert('Please enter a URL');
             return;
