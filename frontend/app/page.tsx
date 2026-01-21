@@ -76,7 +76,7 @@ export default function Home() {
   return (
     <div>
 
-      <div className="flex items-end justify-between border-b border-gray-300/60 pb-2 text-sm">
+      <div className="flex items-end justify-between border-gray-300/60 pb-4 text-sm">
         {/* Left: Search */}
         <div className="flex items-center gap-2">
           <span className="font-medium text-gray-500">search:</span>
@@ -87,7 +87,7 @@ export default function Home() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && searchPosts()}
             className="border-b border-gray-300 bg-transparent px-1 text-sm focus:outline-none focus:border-orange-500"
-            placeholder="search titles"
+            placeholder="enter title"
           />
 
           <button
