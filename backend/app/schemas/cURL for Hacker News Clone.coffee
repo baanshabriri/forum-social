@@ -23,3 +23,15 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzY4OTkyOTY0fQ.pVv9OchMTQdaATKIzpJfj2s84_lztOSFMjD-SG4Lu54' \  
   -d ''
+
+
+
+curl -X 'POST' \
+  'http://localhost:8000/comments/posts/3' \
+  -H 'accept: application/json' \
+  -H 'Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzY4OTkyOTY0fQ.pVv9OchMTQdaATKIzpJfj2s84_lztOSFMjD-SG4Lu54' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "content": "reply - what is this post ?",
+  "parent_id": 3
+}'

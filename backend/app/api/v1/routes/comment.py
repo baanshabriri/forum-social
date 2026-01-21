@@ -114,4 +114,12 @@ async def update_comment(
     comment.content = payload.content
     await db.commit()
     await db.refresh(comment)
-    return comment
+    return CommentOut(    
+        id=comment.id,
+        author_id=comment.author_id,
+        content=comment.content,
+        parent_id=comment.parent_id,
+        post_id=comment.post_id,
+        children=comment.children or [],
+        created_at=comment.created_at
+    )
