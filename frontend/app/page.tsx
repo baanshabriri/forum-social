@@ -91,8 +91,12 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex items-end justify-between border-gray-300/60 pb-4 text-sm">
-        {/* Left: Search */}
+      <div className="border-gray-300/60 pb-4 text-sm space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-gray-500">
+            sorted by: <span className="text-orange-500">{sort}</span>
+          </span>
+        </div>
         <div className="flex items-center gap-2">
           <span className="font-medium text-gray-500">search:</span>
 
@@ -114,13 +118,7 @@ export default function Home() {
             {query.trim() ? '✕' : '🔍'}
           </button>
         </div>
-
-        {/* Right: Sort */}
-        <span className="font-medium text-gray-500">
-          sorted by: <span className="text-orange-500">{sort}</span>
-        </span>
       </div>
-
       {/* Posts */}
       {posts.length === 0 ? (
         <div className="text-center py-12 text-gray-500">

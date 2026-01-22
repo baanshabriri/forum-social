@@ -23,7 +23,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: 'Verdana', 'Geneva', sans-serif;
-  font-size: 11pt;
+  font-size: 10pt;
 }
 
 @layer utilities {
