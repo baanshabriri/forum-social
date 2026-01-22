@@ -75,6 +75,12 @@ export default function Home() {
     }
   };
 
+  const clearSearch = () => {
+    setQuery('');
+    setIsSearching(false);
+    loadPosts(true);
+  };
+
   if (loading && posts.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -101,11 +107,11 @@ export default function Home() {
 
           <button
             type="button"
-            onClick={searchPosts}
+            onClick={query.trim() ? clearSearch : searchPosts}
             className="rounded text-gray-500 hover:text-orange-500"
-            aria-label="Submit search"
+            aria-label={query.trim() ? "Clear search" : "Submit search"}
           >
-            🔍
+            {query.trim() ? '✕' : '🔍'}
           </button>
         </div>
 

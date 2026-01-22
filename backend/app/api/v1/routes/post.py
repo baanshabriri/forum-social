@@ -117,7 +117,9 @@ async def search_posts(
         .offset(offset)
     )
     result = await db.execute(id_stmt)
-    post_ids = result.scalars().all() or []
+    post_ids = result.scalars().all()
+    if len(post_ids) == 0:
+        return []
     posts = await get_posts_data(sort=sort, limit=limit, offset=offset, post_ids=post_ids, db=db)
     
     return posts

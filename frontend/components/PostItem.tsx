@@ -121,7 +121,7 @@ export default function PostItem({ post, rank, onVoteChange }: PostItemProps) {
                     <span>|</span>
                     <Link
                         href={`/post/${post.id}`}
-                        className="underline"
+                        className="underline hover:text-orange-500"
                     >
                         {post.comment_count} comments
                     </Link>
