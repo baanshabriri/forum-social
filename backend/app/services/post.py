@@ -29,7 +29,6 @@ async def get_posts_data(
         .group_by(Comment.post_id)
         .subquery()
     )
-
     stmt = (
         select(
             Post,

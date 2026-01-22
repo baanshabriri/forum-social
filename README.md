@@ -166,7 +166,7 @@ cd forum-social
 ```
 ### Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env.docker` file in the project root:
 
 DATABASE_URL=postgresql+asyncpg://hn_user:hn_pass@db:5432/hn_db
 SECRET_KEY=super-secret-change-me
