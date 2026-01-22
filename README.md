@@ -2,7 +2,7 @@
 
 A full-stack Hacker News style application built with FastAPI, PostgreSQL, Next.js, and Docker Compose.
 
-The project supports authentication, post submission, voting, threaded comments, rate limiting, and a modern frontend. It is designed to be async-safe, production-ready, and easy to extend.
+The project supports authentication, post submission, voting, nested comments, search posts, rate limiting, and a modern frontend. It is designed to be async-safe and easy to extend. It's not production-ready yet.
 
 ---
 
@@ -274,8 +274,9 @@ AI tools were used as development assistants, not autonomous code generators.
 They helped with:
 - Debugging async SQLAlchemy issues
 - Frontend/backend contract alignment
-- Frontend styling and boilerplate setup
+- Frontend styling and boilerplate setup      
 - Rate-limiting decorator design
+- Docker Compose setup and debugging 
 - CI configuration
 - Documentation drafting
 
