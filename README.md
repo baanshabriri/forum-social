@@ -246,7 +246,6 @@ for full backend API documentation.
 - Rate limiting
 - Vote state persistence
 - Dockerized full stack
-- CI for backend, frontend, and Docker builds
 
 ---
 
