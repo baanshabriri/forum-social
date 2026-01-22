@@ -207,27 +207,6 @@ POSTGRES_HOST=db
 
 ---
 
-## Dependencies
-
-### Backend
-- fastapi
-- sqlalchemy
-- asyncpg
-- alembic
-- passlib[bcrypt]
-- python-jose
-- pydantic
-
-### Frontend
-- next
-- react
-- typescript
-- tailwindcss
-
-All dependencies are installed automatically via Docker.
-
----
-
 ## API Documentation
 
 See `API.md` or Swagger API Docs: http://localhost:8000/docs
