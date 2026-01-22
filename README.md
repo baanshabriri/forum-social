@@ -218,7 +218,6 @@ for full backend API documentation.
 - Upvote, downvote, unvote
 - Threaded comments
 - Rate limiting
-- Vote state persistence
 - Dockerized full stack
 
 ---
