@@ -8,7 +8,7 @@ from app.core.limiter import rate_limit
 from app.api.deps import get_current_user
 from app.models import User, Post, Vote, Comment
 from app.schemas.post import PostCreate, PostOut
-from app.services.post import get_posts_data_for_search
+from app.services.post import get_posts_data
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -54,68 +54,8 @@ async def list_posts(
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
 ):
-    upvotes = func.coalesce(
-        func.sum(case((Vote.value == 1, 1), else_=0)), 0
-    ).label("upvotes")
-
-    downvotes = func.coalesce(
-        func.sum(case((Vote.value == -1, 1), else_=0)), 0
-    ).label("downvotes")
-
-    comment_count_subq = (
-        select(
-            Comment.post_id,
-            func.count(Comment.id).label("comment_count")
-        )
-        .group_by(Comment.post_id)
-        .subquery()
-    )
-
-    stmt = (
-        select(
-            Post,
-            upvotes,
-            downvotes,
-            User.username,
-            func.coalesce(comment_count_subq.c.comment_count, 0).label("comment_count")
-        )
-        .outerjoin(Vote, Vote.post_id == Post.id)        
-        .outerjoin(comment_count_subq, comment_count_subq.c.post_id == Post.id)
-        .join(User, User.id == Post.author_id)
-        .group_by(Post.id, User.username, comment_count_subq.c.comment_count)
-    )
-
-    if sort == "new":
-        stmt = stmt.order_by(Post.created_at.desc())
-
-    elif sort == "top":
-        stmt = stmt.order_by(Post.points.desc())
-
-    elif sort == "best":
-        stmt = stmt.order_by(
-            (Post.points / func.extract("epoch", func.now() - Post.created_at)).desc()
-        )
-
-    stmt = stmt.limit(limit).offset(offset)
-    result = await db.execute(stmt)
-
-    posts = []
-    for post, up, down, username, comment_count in result.all():
-        posts.append(PostOut(
-            id= post.id,
-            title=post.title,
-            url=post.url,
-            text=post.text,
-            points=post.points,
-            upvotes=up,
-            downvotes=down,
-            author_id=post.author_id,
-            author_name=username,
-            created_at=post.created_at,
-            comment_count=comment_count
-        ))
+    posts = await get_posts_data(sort=sort,limit=limit, offset=offset, post_ids=[], db=db)
     return posts
-
 
 
 @router.post("/{post_id}/vote")
@@ -164,6 +104,7 @@ async def vote_post(
 @router.get("/search", response_model=list[PostOut])
 async def search_posts(
     q: str = Query(..., min_length=1),
+    sort: str = Query("new", enum=["new", "top", "best"]),
     limit: int = Query(20, le=50),
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
@@ -176,7 +117,7 @@ async def search_posts(
         .offset(offset)
     )
     result = await db.execute(id_stmt)
-    post_ids = result.scalars().all()
-    posts = await get_posts_data_for_search(limit=limit, offset=offset, post_ids=post_ids, db=db)
+    post_ids = result.scalars().all() or []
+    posts = await get_posts_data(sort=sort, limit=limit, offset=offset, post_ids=post_ids, db=db)
     
     return posts

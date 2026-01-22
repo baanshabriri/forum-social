@@ -5,7 +5,8 @@ from app.core.database import get_db
 from app.models import User, Post, Vote, Comment
 from app.schemas.post import PostOut
 
-async def get_posts_data_for_search(
+async def get_posts_data(
+        sort: str,
         limit: int, 
         offset: int, 
         post_ids: list[int], 
@@ -40,11 +41,24 @@ async def get_posts_data_for_search(
         .outerjoin(Vote, Vote.post_id == Post.id)        
         .outerjoin(comment_count_subq, comment_count_subq.c.post_id == Post.id)
         .join(User, User.id == Post.author_id)
+        .group_by(Post.id, User.username, comment_count_subq.c.comment_count)
         
     )
     if len(post_ids) > 0:
         stmt = stmt.where(Post.id.in_(post_ids))
-    stmt = stmt.group_by(Post.id, User.username, comment_count_subq.c.comment_count).limit(limit).offset(offset)        
+    
+    if sort == "new":
+        stmt = stmt.order_by(Post.created_at.desc())
+
+    elif sort == "top":
+        stmt = stmt.order_by(Post.points.desc())
+
+    elif sort == "best":
+        stmt = stmt.order_by(
+            (Post.points / func.extract("epoch", func.now() - Post.created_at)).desc()
+        )
+    
+    stmt = stmt.limit(limit).offset(offset)        
     result = await db.execute(stmt)
     posts = []
     for post, up, down, username, comment_count in result.all():
