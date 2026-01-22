@@ -39,7 +39,7 @@ services:
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:9000
+      NEXT_PUBLIC_API_URL: http://13.201.4.133:9000
     volumes:
       - ./frontend:/app
       - /app/node_modules
