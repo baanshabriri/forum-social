@@ -20,7 +20,9 @@ export default function Home() {
   const limit = 20;
 
   useEffect(() => {
-    if (!isSearching) {
+    if (isSearching && query.trim()) {
+      searchPosts();
+    } else {
       loadPosts(true);
     }
   }, [sort]);
@@ -63,19 +65,27 @@ export default function Home() {
     setIsSearching(true);
 
     try {
-      const data = await api.searchPosts(query.trim());
+      const data = await api.searchPosts(query.trim(), sort);
       setPosts(data);
-      setHasMore(false); // no pagination for search (for now)
+      setHasMore(false);
     } catch (error) {
       console.error('Search failed:', error);
+      setPosts([]);
     } finally {
       setLoading(false);
     }
   };
 
+  if (loading && posts.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        Loading posts...
+      </div>
+    );
+  }
+
   return (
     <div>
-
       <div className="flex items-end justify-between border-gray-300/60 pb-4 text-sm">
         {/* Left: Search */}
         <div className="flex items-center gap-2">
@@ -109,7 +119,7 @@ export default function Home() {
       {/* Posts */}
       {posts.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
-          No posts found.
+          {isSearching ? 'No posts found matching your search.' : 'No posts yet. Be the first to submit!'}
         </div>
       ) : (
         <div>
@@ -118,13 +128,12 @@ export default function Home() {
               key={post.id}
               post={post}
               rank={index + 1}
-              onVoteChange={() => loadPosts(true)}
+              onVoteChange={() => isSearching ? searchPosts() : loadPosts(true)}
             />
           ))}
         </div>
       )}
 
-      {/* Load more (disabled during search) */}
       {hasMore && posts.length > 0 && !isSearching && (
         <div className="text-center mt-6">
           <button

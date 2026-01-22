@@ -57,9 +57,9 @@ class ApiClient {
         return res.json();
     }
 
-    async searchPosts(query: string): Promise<Post[]> {
+    async searchPosts(query: string, sort: string): Promise<Post[]> {
         const res = await fetch(
-            `${API_URL}/posts/search?q=${encodeURIComponent(query)}`
+            `${API_URL}/posts/search?q=${encodeURIComponent(query)}&sort=${sort}`
         );
         if (!res.ok) {
             throw new Error('Search failed');
