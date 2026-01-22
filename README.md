@@ -240,8 +240,8 @@ for full backend API documentation.
 
 ## AI Tools Used
 
-- ChatGPT
-- GitHub Copilot
+- ChatGPT 5.2
+- Claude Sonnet 4.5
 
 ---
 
