@@ -90,10 +90,6 @@ Create a `.env` file inside `backend/`:
 ```
 DATABASE_URL=postgresql+asyncpg://hn_user:hn_pass@db:5432/hn_db
 SECRET_KEY=super-secret-change-me
-POSTGRES_DB=hn_db
-POSTGRES_USER=hn_user
-POSTGRES_PASSWORD=hn_pass
-POSTGRES_HOST=db
 ```
 ---
 
@@ -168,6 +164,16 @@ Frontend will be available at:
 git clone git@github.com:baanshabriri/forum-social.git
 cd forum-social
 ```
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+DATABASE_URL=postgresql+asyncpg://hn_user:hn_pass@db:5432/hn_db
+SECRET_KEY=super-secret-change-me
+POSTGRES_DB=hn_db
+POSTGRES_USER=hn_user
+POSTGRES_PASSWORD=hn_pass
+POSTGRES_HOST=db
 
 ### Start the application
 ```
@@ -181,17 +187,6 @@ docker compose up -d --build
 - PostgreSQL: localhost:5432
 
 ---
-
-## Environment Variables
-
-Create a `.env` file in the project root:
-
-DATABASE_URL=postgresql+asyncpg://hn_user:hn_pass@db:5432/hn_db
-SECRET_KEY=super-secret-change-me
-POSTGRES_DB=hn_db
-POSTGRES_USER=hn_user
-POSTGRES_PASSWORD=hn_pass
-POSTGRES_HOST=db
 
 ### Environment Variable Reference
 
