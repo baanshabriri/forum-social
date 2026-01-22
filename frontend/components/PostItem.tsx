@@ -114,15 +114,18 @@ export default function PostItem({ post, rank, onVoteChange }: PostItemProps) {
                     )}
                 </div>
 
-                <div className="text-xs text-gray-500 mt-1 flex gap-2">
-                    <span>{localPoints} points by {post.author_name}</span>
+                <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <span>{localPoints} points</span>
+                    <span>|</span>
+                    <span>by {post.author_name}</span>
+                    <span>|</span>
                     <span>{timeAgo(post.created_at)}</span>
                     <span>|</span>
                     <Link
                         href={`/post/${post.id}`}
                         className="underline hover:text-orange-500"
                     >
-                        {post.comment_count} comments
+                        {post.comment_count} {post.comment_count === 1 ? 'comment' : 'comments'}
                     </Link>
                 </div>
             </div>
